@@ -7,10 +7,20 @@ import userRouter from './routes/userRouter.js'
 const app = express()
 const port = process.env.PORT
 
+app.use(express.urlencoded({ extended: true }));
 app.use(movieRouter, userRouter);
 
 const mongo_uri = process.env.MONGO_URI;
-mongoose .connect(mongo_uri);
+const middleware = (req, res) => {
+    console.log('My Middleware')
+    next()
+}
+
+app.get('', middleware, (request, response) => {
+    response.send("Hello World")
+})
+
+mongoose.connect(mongo_uri);
 const db = mongoose .connection ;
 //Bind connection to error event (to get notification of connection errors)
 db.on("connected", () => console.log("MongoDB connection fine"));
