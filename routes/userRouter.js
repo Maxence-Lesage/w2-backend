@@ -34,4 +34,29 @@ userRouter.post('/users', emailMiddleware, async (req, res) => {
     }
 })
 
+//FIND BY ID
+userRouter.put('/users/:id', async (req, res) => {
+    const {id} = req.params
+    try {
+        const updatedUser = await User.findByIdAndUpdate(id, req.body, {new: true})
+        return res.status(200).json(updatedUser)
+    } catch (error) {
+        return res.status(500).json({message: "Internal server error"})
+    }
+})
+
+userRouter.delete('/users/:id', async (req, res) => {
+    const {id} = req.params
+    try {
+        const deleteUser = await User.deleteOne({ _id: id })
+        if(deleteUser.deletedCount === 1) {
+            return res.status(203).json({message: "User has been deleted"})
+        } else {
+            return res.status(404).json({message: "User not found"})
+        }
+    } catch (error) {
+        return res.status(500).json({message: "Internal server error"})
+    }
+})
+
 export default userRouter

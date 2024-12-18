@@ -1,6 +1,6 @@
 import User from "../models/User.js"
 
-export const emailMiddleware = async (req, res) => {
+export const emailMiddleware = async (req, res, next) => {
     let {email} = req.body
     const searchUserByEmail = await User.findOne({email})
     if(searchUserByEmail){
