@@ -1,48 +1,20 @@
 import express from 'express'
 import "dotenv/config"
+import movieRouter from './routes/movieRouter.js'
+import mongoose from 'mongoose'
+import userRouter from './routes/userRouter.js'
 
 const app = express()
 const port = process.env.PORT
 
-let movies = [
-    {
-        id: 1,
-        title: 'Forest Gump',
-        genre: 'Comédie'
-    },
-    {
-        id: 2,
-        title: 'Forest Gumpii',
-        genre: 'Action'
-    },
-    {
-        id: 3,
-        title: 'Forest Gumpoo',
-        genre: 'Drame'
-    }
-]
+app.use(movieRouter, userRouter);
 
-app.get('/', (request, response) => {
-    response.send('Walcome ta my APi')
-})
+const mongo_uri = process.env.MONGO_URI;
+mongoose .connect(mongo_uri);
+const db = mongoose .connection ;
+//Bind connection to error event (to get notification of connection errors)
+db.on("connected", () => console.log("MongoDB connection fine"));
+db.on("error", console.error.bind(console, "MongoDB connection error:" ));
 
-app.get('/movie/:id', (request, response) => {
-    const idToSearchFor = request.params.id
-    if(movies[idToSearchFor-1]){
-        response.status(200).json(movies[idToSearchFor-1])
-    }else{
-        response.status(404).send("Movie not found")
-    }
-})
-
-app.post('/movie/:id', (request, response) => {
-    const idToSearchFor = request.params.id
-    if(movies[idToSearchFor-1]){
-        response.status(409).send("This ID already exist")
-    }else{
-        movies.push({id: idToSearchFor,title: 'Example',genre: 'Drame'})
-        response.status(201).json(movies)
-    }
-})
 
 app.listen(port, () => console.log('Server is running on port ' + port))
