@@ -1,5 +1,6 @@
 import { Router } from "express";
 import Playlist from "../models/Playlist.js";
+import { playlistIdExistMiddleware } from "../middleware/playlistValidation.js";
 
 const playlistRouter = Router()
 
@@ -56,16 +57,12 @@ playlistRouter.put('/playlists/:id', async (req, res) => {
 })
 
 //Delete a playlist
-playlistRouter.delete('/playlists/:id', async (req, res) => {
+playlistRouter.delete('/playlists/:id', playlistIdExistMiddleware, async (req, res) => {
     try {
         const {id} = req.params
         const targetedPlaylist = await Playlist.findById(id)
-        if(targetedPlaylist){
-            await Playlist.deleteOne(targetedPlaylist)
-            return res.status(201).json({message: "Playlist supprimé avec succès"})
-        }else{
-            return res.status(404).json({message: "La playlist n'existe pas"})
-        }
+        await Playlist.deleteOne(targetedPlaylist)
+        return res.status(201).json({message: "Playlist supprimé avec succès"})
     } catch (error) {
         return res.status(500).json({message: "Erreur interne au serveur, veuillez réessayez plus tard."})
     }
