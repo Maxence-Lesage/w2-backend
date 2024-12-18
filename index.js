@@ -3,12 +3,13 @@ import "dotenv/config"
 import movieRouter from './routes/movieRouter.js'
 import mongoose from 'mongoose'
 import userRouter from './routes/userRouter.js'
+import playlistRouter from './routes/playlistRouter.js'
 
 const app = express()
 const port = process.env.PORT
 
 app.use(express.urlencoded({ extended: true }));
-app.use(movieRouter, userRouter);
+app.use(movieRouter, userRouter, playlistRouter);
 
 const mongo_uri = process.env.MONGO_URI;
 const middleware = (req, res) => {
