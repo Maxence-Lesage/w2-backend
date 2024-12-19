@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { playlistIdExistMiddleware } from "../middleware/playlistValidation.js";
+import {tokenVerification} from "../middleware/userValidation.js"
 import { createNewPlaylist, deletePlaylist, getAllPlaylists, getPlaylistById, getPlaylistByName, updatePlaylist } from "../controllers/playlistController.js";
 
 const playlistRouter = Router()

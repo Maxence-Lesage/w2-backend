@@ -4,9 +4,9 @@ import { addNewPlaylist, createUser, deleteUser, getAllUsers, getUserById, showA
 
 const userRouter = Router()
 
-userRouter.get('/users', tokenVerification, getAllUsers)
+userRouter.get('/users', getAllUsers)
 
-userRouter.post('/users/playlists', showAllPlaylist)
+userRouter.post('/users/playlists', tokenVerification, showAllPlaylist)
 
 userRouter.post('/users', emailMiddleware, createUser)
 

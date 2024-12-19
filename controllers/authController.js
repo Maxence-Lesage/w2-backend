@@ -40,7 +40,7 @@ export const loginUser = async (req, res) => {
 
             const token = jwt.sign({user: user._id}, "SECRET_JWT")
 
-            return res.status(200).send(token)
+            return res.status(200).json({token: token})
 
         }else{
             return res.status(400).send("not good")
