@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { emailMiddleware } from "../middleware/userValidation.js";
+import { emailMiddleware, tokenVerification } from "../middleware/userValidation.js";
 import { addNewPlaylist, createUser, deleteUser, getAllUsers, getUserById, showAllPlaylist } from "../controllers/userController.js";
 
 const userRouter = Router()
 
-userRouter.get('/users', getAllUsers)
+userRouter.get('/users', tokenVerification, getAllUsers)
 
 userRouter.post('/users/playlists', showAllPlaylist)
 
