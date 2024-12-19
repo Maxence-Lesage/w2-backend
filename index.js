@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import userRouter from './routes/userRouter.js'
 import playlistRouter from './routes/playlistRouter.js'
 import cors from 'cors'
+import musicRouter from './routes/musicRouter.js'
 
 const app = express()
 const port = process.env.PORT
@@ -11,7 +12,7 @@ const port = process.env.PORT
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(userRouter, playlistRouter);
+app.use(userRouter, playlistRouter, musicRouter);
 
 const mongo_uri = process.env.MONGO_URI;
 const middleware = (req, res) => {
