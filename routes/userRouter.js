@@ -6,6 +6,8 @@ const userRouter = Router()
 
 userRouter.get('/users', getAllUsers)
 
+userRouter.post('/users/playlists', showAllPlaylist)
+
 userRouter.post('/users', emailMiddleware, createUser)
 
 userRouter.put('/users/playlists', addNewPlaylist)
@@ -13,7 +15,5 @@ userRouter.put('/users/playlists', addNewPlaylist)
 userRouter.put('/users/:id', getUserById)
 
 userRouter.delete('/users/:id', deleteUser)
-
-userRouter.get('/users/playlists', showAllPlaylist)
 
 export default userRouter

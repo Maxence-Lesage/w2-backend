@@ -77,11 +77,13 @@ export const showAllPlaylist = async (req, res) => {
     try {
         const {userId} = req.body
         const user = await User.findById(userId)
+        console.log(userId)
         const playlists = await user.populate('playlists_id', '-password')
         if(playlists){
             res.status(200).json(playlists.playlists_id)
         }
     } catch (error) {
+        console.log(error)
         return res.status(500).json({message: "Internal server error"})
     }
 }
