@@ -33,6 +33,21 @@ playlistRouter.get('/playlists/name', async (req, res) => {
     }
 })
 
+//Get a specific playlist by id
+playlistRouter.get('/playlists/id/:id', async (req, res) => {
+    try {
+        const {id} = req.params
+        const playlist = await Playlist.findOne({_id: id});
+        if(playlist){
+            return res.status(200).json(playlist);
+        }else{
+            return res.status(404).json({message: "Aucune playlist n'a été trouvé"})
+        }
+    } catch (error) {
+        return res.status(500).json({message: "Erreur interne au serveur, veuillez réessayez plus tard."})
+    }
+})
+
 //Create a new playlist
 playlistRouter.post('/playlists', async (req, res) => {
     try {

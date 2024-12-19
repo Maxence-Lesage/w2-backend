@@ -1,15 +1,16 @@
 import express from 'express'
 import "dotenv/config"
-import movieRouter from './routes/movieRouter.js'
 import mongoose from 'mongoose'
 import userRouter from './routes/userRouter.js'
 import playlistRouter from './routes/playlistRouter.js'
+import cors from 'cors'
 
 const app = express()
 const port = process.env.PORT
 
+app.use(cors())
 app.use(express.urlencoded({ extended: true }));
-app.use(movieRouter, userRouter, playlistRouter);
+app.use(userRouter, playlistRouter);
 
 const mongo_uri = process.env.MONGO_URI;
 const middleware = (req, res) => {
@@ -23,7 +24,6 @@ app.get('', middleware, (request, response) => {
 
 mongoose.connect(mongo_uri);
 const db = mongoose .connection ;
-//Bind connection to error event (to get notification of connection errors)
 db.on("connected", () => console.log("MongoDB connection fine"));
 db.on("error", console.error.bind(console, "MongoDB connection error:" ));
 

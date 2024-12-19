@@ -17,7 +17,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
         minlength: 8
-    }
+    },
+    playlists_id: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Playlist'
+    }]
 });
 
 export default mongoose.model('User', userSchema)
