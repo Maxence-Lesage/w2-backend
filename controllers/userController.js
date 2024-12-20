@@ -56,22 +56,43 @@ export const deleteUser = async (req, res) => {
     }
 }
 
-export const addNewPlaylist = async (req, res) => {
+export const addNewPlaylists = async (req, res) => {
     try {
-        const {userId, playlistId} = req.body
-        const user = await User.findById(userId)
-        const playlist = await Playlist.findById(playlistId)
-        if(user && playlist){
-            user.playlists_id.push(playlistId);
-            await user.save();
-            return res.status(200).json({ message: "Playlist ajouté avec succès" });
-        }else {
-            return res.status(404).json({ message: "Utilisateur ou playlist inexistante" });
+        const { userId, playlistsID } = req.body;
+
+        if (!Array.isArray(playlistsID)) {
+            return res.status(400).json({ message: "playlistsID doit être un tableau" });
         }
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur inexistant" });
+        }
+
+        const validPlaylists = [];
+        for (const playlistId of playlistsID) {
+            const playlist = await Playlist.findById(playlistId);
+            if (playlist) {
+                validPlaylists.push(playlistId);
+            }
+        }
+
+        if (validPlaylists.length === 0) {
+            return res.status(404).json({ message: "Aucune playlist valide trouvée" });
+        }
+
+        // Ajouter uniquement les playlists valides
+        user.playlists_id.push(...validPlaylists);
+        await user.save();
+
+        return res.status(200).json({ message: "Playlists ajoutées avec succès", playlistsAdded: validPlaylists });
     } catch (error) {
-        return res.status(500).json({message: "Internal server error"})
+        console.error(error);
+        return res.status(500).json({ message: "Erreur interne du serveur" });
     }
-}
+};
+
 
 export const showAllPlaylist = async (req, res) => {
     try {
