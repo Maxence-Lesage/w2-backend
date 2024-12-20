@@ -70,13 +70,21 @@ export const addNewPlaylists = async (req, res) => {
             return res.status(404).json({ message: "Utilisateur inexistant" });
         }
 
-        const validPlaylists = [];
+        let validPlaylists = [];
         for (const playlistId of playlistsID) {
             const playlist = await Playlist.findById(playlistId);
             if (playlist) {
                 validPlaylists.push(playlistId);
             }
         }
+
+        if (validPlaylists.length === 0) {
+            return res.status(404).json({ message: "Aucune playlist valide trouvée" });
+        }
+
+        // Retirer les playlists déjà ajoutées de validPlaylists
+        const userPlaylists = user.playlists_id.map(playlist => playlist.toString());
+        validPlaylists = validPlaylists.filter(playlistId => !userPlaylists.includes(playlistId));
 
         if (validPlaylists.length === 0) {
             return res.status(404).json({ message: "Aucune playlist valide trouvée" });
