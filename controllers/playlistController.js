@@ -62,13 +62,21 @@ export const updatePlaylist = async (req, res) => {
     }
 }
 
-export const deletePlaylist = async (req, res) => {
+export const deletePlaylists = async (req, res) => {
     try {
-        const {id} = req.params
-        const targetedPlaylist = await Playlist.findById(id)
-        await Playlist.deleteOne(targetedPlaylist)
-        return res.status(201).json({message: "Playlist supprimé avec succès"})
+        const { playlistsID } = req.body;
+        if (!Array.isArray(playlistsID) || playlistsID.length === 0) {
+            return res.status(400).json({ message: "Aucun ID fourni ou format invalide." });
+        }
+
+        const result = await Playlist.deleteMany({ _id: { $in: playlistsID } });
+
+        return res.status(200).json({
+            message: `${result.deletedCount} playlists supprimées avec succès.`,
+        });
     } catch (error) {
-        return res.status(500).json({message: "Erreur interne au serveur, veuillez réessayez plus tard."})
+        return res.status(500).json({
+            message: "Erreur interne au serveur, veuillez réessayer plus tard.",
+        });
     }
-}
+};

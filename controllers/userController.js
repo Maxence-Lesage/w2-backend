@@ -117,6 +117,38 @@ export const showAllPlaylist = async (req, res) => {
     }
 }
 
-//user     : 6762d5c648363a1b724ea60e
-//playlist : 6762e91c0d5fcd4ddae18ab0
-// Post.find().populate('user_id', '-password')
+export const removePlaylists = async (req, res) => {
+    try {
+        const { userId, playlistsID } = req.body;
+
+        if (!Array.isArray(playlistsID)) {
+            return res.status(400).json({ message: "playlistsID doit être un tableau" });
+        }
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur inexistant" });
+        }
+
+        let removedPlaylists = [];
+        for (const playlistId of playlistsID) {
+            const playlistIndex = user.playlists_id.indexOf(playlistId);
+            if (playlistIndex !== -1) {
+                removedPlaylists.push(user.playlists_id[playlistIndex]);
+                user.playlists_id.splice(playlistIndex, 1);
+            }
+        }
+
+        if (removedPlaylists.length === 0) {
+            return res.status(404).json({ message: "Aucune playlist trouvée" });
+        }
+
+        await user.save();
+
+        return res.status(200).json({ message: "Playlists supprimées avec succès", playlistsRemoved: removedPlaylists });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+}
